@@ -1,3 +1,4 @@
 .DS_Store
 .idea/
 data/stored_user.json
+__pycache__/
