@@ -1,0 +1,8 @@
+{
+  "users_url": "https://thinking-tester-contact-list.herokuapp.com/users",
+  "current_user_url": "https://thinking-tester-contact-list.herokuapp.com/users/me",
+  "login_url": "https://thinking-tester-contact-list.herokuapp.com/users/login",
+  "logout_url": "https://thinking-tester-contact-list.herokuapp.com/users/logout",
+  "invalid_token": "123fdef3e32423423413223232131232",
+  "token":   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU4ZTdlZDhjMTM4MjAwMTM5YmRjNzciLCJpYXQiOjE3MDEwMDYyODl9.PnXOuUjbC57360puhPUYULUOg_Rkdz-2vWn_SWr6ehw"
+}
