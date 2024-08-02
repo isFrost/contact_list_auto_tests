@@ -6,14 +6,18 @@ from utils.data_helper import DataHelper as DH
 class TestLoginUser:
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.gen_variables = DH.get_data('variables.json')
-        self.url = self.gen_variables.get('login_url')
-        self.user_data = DH.get_data('stored_user.json')
+        self.vars = DH.get_data('variables.json')
+        self.url = self.vars.get('login_url')
+        self.user_data = DH.get_data('stored_user.json')    # get previously created user info
 
     def test_login_user(self):
-        user = self.user_data['user']
+        user = self.user_data['user']    # get user info for validation
+
+        # send request
         r = requests.post(self.url, json={'email': user['email'], 'password': user['password']})
-        assert r.status_code == 200
+        assert r.status_code == 200    # validate status code
+
+        # validate that response returned correct user information
         data = r.json()
         assert data['user']['firstName'] == user['firstName']
         assert data['user']['lastName'] == user['lastName']
@@ -21,5 +25,7 @@ class TestLoginUser:
         assert data['user']['_id'] == user['_id']
 
     def test_login_non_existing_user(self):
+
+        # send response with invalid user credentials
         r = requests.post(self.url, json={'email': 'non.existing.user@test.com', 'password': 'Welcome@123'})
-        assert r.status_code == 401
+        assert r.status_code == 401    # validate status code
