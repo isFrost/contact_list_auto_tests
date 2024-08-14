@@ -1,25 +1,17 @@
 import pytest
 import requests
-from utils.data_helper import DataHelper as DH
 
 
 class TestGetUserInfo:
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.vars = DH.get_data('variables.json')
-        self.url = self.vars.get('current_user_url')
-        self.user_data = DH.get_data('stored_user.json')    # get previously created user info
-        self.headers = {'Authorization': self.user_data.get('token')}    # token of existing user
-        self.invalid_headers = {'Authorization': self.vars.get('invalid_token')}    # token non-existing in the system
-
-    def test_get_user_profile(self):
-        user = self.user_data['user']   # get user info for validation
-
-        # send request
-        r = requests.get(self.url, headers=self.headers)
-        assert r.status_code == 200    # validate status code
-
+    def test_get_user_profile(self, new_user, current_user_url):
+        if not new_user:
+            pytest.skip('Failed to create test user')    # skip test if user is not created
+        user = new_user['user']  # get user info for validation
+        r = requests.get(
+            current_user_url,
+            headers={'Authorization': new_user['token']}
+        )  # send request
+        assert r.status_code == 200  # validate status code
         # validate that response returned information of the required user
         data = r.json()
         assert data['_id'] == user['_id']
@@ -28,12 +20,8 @@ class TestGetUserInfo:
         assert data['email'] == user['email']
         assert data['__v'] == user['__v']
 
-    def test_get_non_existing_user(self):
-
-        # send request
-        r = requests.get(self.url, headers=self.invalid_headers)
-        assert r.status_code == 401    # validate status code
-
-        # validate error message
+    def test_get_non_existing_user(self, current_user_url, invalid_headers):
+        r = requests.get(current_user_url, headers=invalid_headers)  # send request
+        assert r.status_code == 401  # validate status code
         data = r.json()
-        assert data['error'] == 'Please authenticate.'
+        assert data['error'] == 'Please authenticate.'  # validate error message
