@@ -2,3 +2,4 @@
 .idea/
 data/stored_user.json
 __pycache__/
+/tests/allure-results/

@@ -1,8 +1,13 @@
+import allure
 import pytest
 import requests
 
 
 class TestLoginUser:
+
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC14: Login existing user')
     def test_login_user(self, new_user, login_url, user_payload):
         if not new_user:
             pytest.skip('Failed to create test user')    # skip test if user is not created
@@ -19,6 +24,9 @@ class TestLoginUser:
         assert data['user']['email'] == user['email']
         assert data['user']['_id'] == user['_id']
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC15: Login non-existing user')
     def test_login_non_existing_user(self, login_url):
         # send response with invalid user credentials
         r = requests.post(login_url, json={'email': 'non.existing.user@test.com', 'password': 'Welcome@123'})

@@ -1,8 +1,12 @@
+import allure
 import pytest
 import requests
 
 
 class TestUpdateUser:
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC08: Update existing user')
     def test_update_user(self, new_user, current_user_url, updated_payload):
         if not new_user:
             pytest.skip('Failed to create test user')    # skip test if user is not created
@@ -18,6 +22,9 @@ class TestUpdateUser:
         assert data['lastName'] == updated_payload['lastName']
         assert data['email'] == updated_payload['email']
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC09: Update non-existing user')
     def test_update_non_existing_user(self, current_user_url, updated_payload, invalid_headers):
         updated_payload['email'] = f'tc2-{updated_payload['email']}'    # set email in case payload is accepted
         r = requests.patch(current_user_url, headers=invalid_headers, json=updated_payload)    # send request
@@ -26,6 +33,9 @@ class TestUpdateUser:
         data = r.json()
         assert data['error'] == 'Please authenticate.'
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC10: Validation of First Name on updating existing user')
     def test_update_first_name_validation(self, new_user, current_user_url, updated_payload):
         if not new_user:
             pytest.skip('Failed to create test user')  # skip test if user is not created
@@ -41,6 +51,9 @@ class TestUpdateUser:
         data = r.json()
         assert data['errors']['firstName']['message'] == 'Path `firstName` is required.'
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC11: Validation of Last Name on updating existing user')
     def test_update_last_name_validation(self, new_user, current_user_url, updated_payload):
         if not new_user:
             pytest.skip('Failed to create test user')  # skip test if user is not created
@@ -56,6 +69,9 @@ class TestUpdateUser:
         data = r.json()
         assert data['errors']['lastName']['message'] == 'Path `lastName` is required.'
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC12: Validation of Email on updating existing user')
     def test_update_email_validation(self, new_user, current_user_url, updated_payload):
         if not new_user:
             pytest.skip('Failed to create test user')  # skip test if user is not created
@@ -70,6 +86,9 @@ class TestUpdateUser:
         data = r.json()
         assert data['errors']['email']['message'] == 'Email is invalid'
 
+    @allure.parent_suite('Contact List API')
+    @allure.suite('TS01: User Management')
+    @allure.sub_suite('TC13: Validation of Password on updating existing user')
     def test_update_password_validation(self, new_user, current_user_url, updated_payload):
         if not new_user:
             pytest.skip('Failed to create test user')  # skip test if user is not created
