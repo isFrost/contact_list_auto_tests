@@ -1,0 +1,13 @@
+{
+    "firstName": "Martha",
+    "lastName": "Smith",
+    "birthdate": "1995-11-11",
+    "email": "msmith@dispostable.com",
+    "phone": "8001111111",
+    "street1": "199 Gräfstraße",
+    "street2": "Apartment C",
+    "city": "Munich",
+    "stateProvince": "Bavaria",
+    "postalCode": "88888",
+    "country": "Germany"
+}
