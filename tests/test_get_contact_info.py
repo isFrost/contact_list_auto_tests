@@ -5,7 +5,7 @@ import allure
 
 class TestGetContactInfo:
     @allure.parent_suite('Contact List API')
-    @allure.suite('Contact Management')
+    @allure.suite('TS02: Contact Management')
     @allure.sub_suite('TC17: Get the list of the contacts')
     def test_get_list_of_contacts(self, new_contact, contacts_url, default_headers):
         contacts = [new_contact for i in range(4)]  # create several new contacts
@@ -30,7 +30,7 @@ class TestGetContactInfo:
             assert data[contact['_id']]['country'] == contact['country']
 
     @allure.parent_suite('Contact List API')
-    @allure.suite('Contact Management')
+    @allure.suite('TS02: Contact Management')
     @allure.sub_suite('TC18: Restriction on contacts information for unauthorized users')
     def test_get_contacts_without_authorization(self, contacts_url, invalid_headers):
         r = requests.get(contacts_url, headers=invalid_headers)
@@ -38,7 +38,7 @@ class TestGetContactInfo:
         assert r.json()['error'] == 'Please authenticate.'     # validate error message
 
     @allure.parent_suite('Contact List API')
-    @allure.suite('Contact Management')
+    @allure.suite('TS02: Contact Management')
     @allure.sub_suite('TC19: Get information of a particular contact')
     def test_get_contact(self, new_contact, contacts_url, default_headers):
         if not new_contact:
@@ -62,7 +62,7 @@ class TestGetContactInfo:
         assert data['country'] == contact['country']
 
     @allure.parent_suite('Contact List API')
-    @allure.suite('Contact Management')
+    @allure.suite('TS02: Contact Management')
     @allure.sub_suite('TC20: Validation of contact id in contact information request')
     def test_get_non_existing_contact(self, contacts_url, default_headers):
         r = requests.get(f'{contacts_url}/66d9a1a52b15240013700f2p', headers=default_headers)
