@@ -34,17 +34,26 @@ pipeline {
                     sh """
                         docker run --name ${CONTAINER_NAME} -d -p ${REPORT_PORT}:${REPORT_PORT} ${DOCKER_IMAGE}
                     """
-
-                    // Optionally: execute tests or other steps (already in Dockerfile)
-                    // Jenkins will listen to the process outputs
-
-                    // Wait for the tests and allure server to start properly (adjust timeout as necessary)
-                    sleep 20
-
-                    // Optionally: print the logs to see what happened
+                    // Print the logs to see what happened
                     sh """
                         docker logs ${CONTAINER_NAME}
                     """
+                }
+            }
+        }
+
+        stage('Wait for Tests to Complete') {
+            steps {
+                script {
+                    // Wait for pytest to finish inside the container
+                    // This checks if the pytest process is still running inside the container
+                    sh """
+                        while sudo docker exec ${CONTAINER_NAME} pgrep pytest > /dev/null; do
+                            echo "Tests are still running...";
+                            sleep 5;
+                        done
+                    """
+                    echo "Tests have completed!"
                 }
             }
         }
