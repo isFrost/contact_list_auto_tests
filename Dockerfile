@@ -24,4 +24,4 @@ COPY utils ./utils
 EXPOSE 8080
 
 # run pytest, generate Allure results, and then serve the report
-CMD ["sh", "-c", "python3 -m pytest -v --alluredir=allure-results && allure serve allure-results --host 0.0.0.0 --port 8080"]
+CMD ["sh", "-c", "python3 -m pytest --alluredir=allure-results && allure serve allure-results --host 0.0.0.0 --port 8080"]

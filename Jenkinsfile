@@ -48,7 +48,7 @@ pipeline {
                     // Wait for pytest to finish inside the container
                     // This checks if the pytest process is still running inside the container
                     sh """
-                        while sudo docker exec ${CONTAINER_NAME} pgrep pytest > /dev/null; do
+                        while docker exec ${CONTAINER_NAME} pgrep pytest > /dev/null; do
                             echo "Tests are still running...";
                             sleep 5;
                         done
