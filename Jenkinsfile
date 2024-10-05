@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'contact-list-tests' // Replace with your Docker image name
         CONTAINER_NAME = 'contact-list-tests'  // Replace with your desired container name
         ALURE_REPORTS_DIR = 'allure-results'
-        REPORT_PORT = '8080'
+        REPORT_PORT = '8090'
     }
 
     stages {
