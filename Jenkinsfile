@@ -32,28 +32,12 @@ pipeline {
                 script {
                     // Run the container with the built image
                     sh """
-                        docker run --name ${CONTAINER_NAME} -d -p ${REPORT_PORT}:${REPORT_PORT} ${DOCKER_IMAGE}
+                        docker run --name ${CONTAINER_NAME} -p ${REPORT_PORT}:${REPORT_PORT} ${DOCKER_IMAGE}
                     """
                     // Print the logs to see what happened
                     sh """
                         docker logs ${CONTAINER_NAME}
                     """
-                }
-            }
-        }
-
-        stage('Wait for Tests to Complete') {
-            steps {
-                script {
-                    // Wait for pytest to finish inside the container
-                    // This checks if the pytest process is still running inside the container
-                    sh """
-                        while docker exec ${CONTAINER_NAME} pgrep pytest > /dev/null; do
-                            echo "Tests are still running...";
-                            sleep 5;
-                        done
-                    """
-                    echo "Tests have completed!"
                 }
             }
         }
