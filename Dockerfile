@@ -3,7 +3,7 @@ FROM python:3.12
 
 WORKDIR ./app
 
-# install dependancies from requirements
+# install dependencies from requirements
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
@@ -20,8 +20,8 @@ COPY data ./data
 COPY tests ./tests
 COPY utils ./utils
 
-# expose port
-EXPOSE 8080
+# expose port (no longer needed for Allure serve)
+EXPOSE 8090
 
-# run pytest, generate Allure results, and then serve the report
-CMD ["sh", "-c", "python3 -m pytest --alluredir=allure-results && allure serve allure-results --host 0.0.0.0 --port 8080"]
+# run pytest and generate Allure results
+CMD ["sh", "-c", "python3 -m pytest --alluredir=allure-results"]

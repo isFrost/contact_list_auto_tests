@@ -2,24 +2,24 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'contact-list-tests' // Replace with your Docker image name
-        CONTAINER_NAME = 'contact-list-tests'  // Replace with your desired container name
-        ALURE_REPORTS_DIR = 'allure-results'
+        DOCKER_IMAGE = 'contact-list-tests'
+        CONTAINER_NAME = 'contact-list-tests'
+        ALLURE_REPORTS_DIR = 'allure-results'
         REPORT_PORT = '8090'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                // Assuming your Dockerfile is part of a Git repository
-                git branch: 'main', url: 'https://github.com/isFrost/contact_list_auto_tests.git' // Replace with your repo
+                // clone repository with the Dockerfile and tests
+                git branch: 'main', url: 'https://github.com/isFrost/contact_list_auto_tests.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image based on the Dockerfile
+                    // build the Docker image
                     sh """
                         docker build -t ${DOCKER_IMAGE} .
                     """
@@ -27,16 +27,23 @@ pipeline {
             }
         }
 
-        stage('Run Tests and Generate Allure Report') {
+        stage('Run Tests and Generate Allure Results') {
             steps {
                 script {
-                    // Run the container with the built image
+                    // run the container and execute the tests
                     sh """
-                        docker run --name ${CONTAINER_NAME} -p ${REPORT_PORT}:${REPORT_PORT} ${DOCKER_IMAGE}
+                        docker run --name ${CONTAINER_NAME} ${DOCKER_IMAGE} sh -c "python3 -m pytest --alluredir=/app/${ALLURE_REPORTS_DIR}"
                     """
-                    // Print the logs to see what happened
+                }
+            }
+        }
+
+        stage('Copy Allure Results to Jenkins') {
+            steps {
+                script {
+                    // copy the allure results from the container to the Jenkins workspace
                     sh """
-                        docker logs ${CONTAINER_NAME}
+                        docker cp ${CONTAINER_NAME}:/app/${ALLURE_REPORTS_DIR} ${ALLURE_REPORTS_DIR}
                     """
                 }
             }
@@ -44,15 +51,8 @@ pipeline {
 
         stage('Publish Allure Report') {
             steps {
-                script {
-                    // Copy the allure results from the container to Jenkins workspace
-                    sh """
-                        docker cp ${CONTAINER_NAME}:/app/${ALURE_REPORTS_DIR} ${ALURE_REPORTS_DIR}
-                    """
-                }
-
-                // Publish Allure report using the Jenkins Allure plugin
-                allure includeProperties: false, jdk: '', results: [[path: "${ALURE_REPORTS_DIR}"]]
+                // publish allure report using the Jenkins allure plugin
+                allure includeProperties: false, jdk: '', results: [[path: "${ALLURE_REPORTS_DIR}"]]
             }
         }
     }
@@ -60,7 +60,7 @@ pipeline {
     post {
         always {
             script {
-                // Stop and remove the container
+                // Stop and remove the container to clean up
                 sh """
                     docker stop ${CONTAINER_NAME} || true
                     docker rm ${CONTAINER_NAME} || true
